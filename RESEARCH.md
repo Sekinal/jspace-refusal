@@ -193,6 +193,41 @@ still carries a monitorable internal refusal signal — a practical safety hook.
 Reproduce: `scripts/05_decompose.py`, `06_monitor.py`, `07_nullspace.py`,
 `08_monitor_control.py`.
 
+## Representation vs. narration: what actually drives refusal
+
+The correction above said behavior follows a lens-visible harmfulness-*perception*
+feature, not the refusal-*narration* our pullback targeted. We then established
+this as a **bidirectional causal dissociation** — by ablation *and* by steering.
+
+**No say-disposition pullback is the behavioral lever** (`scripts/09_perception.py`,
+n = 100). We built a second pullback `p_harm` from harm-perception tokens
+(`illegal`/`crime`/`violence`). Ablating it removes ~0% of behavior (adv 0.98 at
+strength 1.0 *and* 1.5), same as the refusal pullback; `cos(p_harm, m⊥p) = 0.11`.
+So the J-lens pullback — built from unembedding covectors — targets *disposition
+to say token X*, i.e. **narration**. The behavior-carrying `m⊥p` is a harm
+**representation**: lens-visible (it decodes to `illegal`/`crime`) but not any
+token-pullback.
+
+**Bidirectional causal test** (`scripts/10_steer.py`, n = 64) — add each
+direction to benign prompts and see which *induces* refusal:
+
+|  | ablate (remove) | add (induce on benign) |
+|---|---|---|
+| representation `m⊥p` | behavior 0.99 → **0.09** | benign 0.03 → **0.92** at workspace-mass 3.3 |
+| refusal-narration `p_ref` | → 0.77 (intact) | 0.78, but at workspace-mass **10.2** (forced "cannot") |
+| harm-narration `p_harm` | → 0.98 (intact) | 0.33; injects harm words, no refusal |
+
+Adding the representation flips benign prompts to *genuine* refusal ("I cannot
+provide information on illegal or harmful activities") at ~⅓ the workspace-mass
+cost of narration. The cleanest illustration: adding `p_harm` makes the model
+write *"Two other types of renewable energy are: 1. Illegal drug trafficking"* —
+it *says* "illegal" without perceiving harm or refusing. **Narration ≠
+perception ≠ behavior.**
+
+**Practical spinoff.** The harm-perception readout (`harm_mass`) is a
+topic-robust genuine-harm detector: harmful **6.35**, benign-but-harmful-topic
+(XSTest-safe) **0.74**, benign **−0.50** — cleaner than refusal-mass.
+
 ## Reproduce
 
 ```bash

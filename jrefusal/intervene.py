@@ -88,3 +88,63 @@ class AblationHook:
         for handle in self._handles:
             handle.remove()
         self._handles = []
+
+
+class SteeringHook:
+    """Context manager that *adds* a direction to the residual stream (the
+    complement of :class:`AblationHook`).
+
+    At each layer, adds ``coeff * s * d`` where ``d`` is the (unit) top basis
+    row and ``s`` is the mean per-token residual L2 norm in the current forward
+    pass — so the perturbation is a fixed fraction of the residual magnitude,
+    comparable across directions. Used to test whether a direction is
+    *sufficient* to induce a behavior.
+    """
+
+    def __init__(
+        self,
+        blocks: Sequence[nn.Module],
+        directions: RefusalDirections,
+        *,
+        coeff: float = 0.2,
+        layers: Sequence[int] | None = None,
+    ) -> None:
+        self._blocks = blocks
+        self._directions = directions
+        active = set(directions.layers if layers is None else layers)
+        self._layers = sorted(active & set(directions.layers))
+        self._coeff = float(coeff)
+        self._handles: list[torch.utils.hooks.RemovableHandle] = []
+
+    def _make_hook(self, layer: int):
+        d = self._directions.basis[layer][0]              # [d_model], unit
+        coeff = self._coeff
+
+        def hook(module, inputs, output):
+            if coeff == 0.0:
+                return output
+            tensor = output if torch.is_tensor(output) else output[0]
+            vec = d.to(device=tensor.device, dtype=tensor.dtype)
+            s = tensor.norm(dim=-1, keepdim=True).mean()  # mean token residual norm
+            edited = tensor + coeff * s * vec
+            if torch.is_tensor(output):
+                return edited
+            return (edited, *output[1:])
+
+        return hook
+
+    def __enter__(self) -> SteeringHook:
+        try:
+            for layer in self._layers:
+                self._handles.append(
+                    self._blocks[layer].register_forward_hook(self._make_hook(layer))
+                )
+        except Exception:
+            self.__exit__()
+            raise
+        return self
+
+    def __exit__(self, *exc) -> None:
+        for handle in self._handles:
+            handle.remove()
+        self._handles = []

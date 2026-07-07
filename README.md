@@ -98,6 +98,16 @@ it's a *disposition* detector, not a topic detector: benign-but-harmful-topic
 (`scripts/08_monitor_control.py`). An "uncensored" model still carries a
 monitorable internal refusal signal. Details in [RESEARCH.md](RESEARCH.md).
 
+**Bidirectional causal test.** Neither a refusal-token nor a harm-token pullback
+is the behavioral lever (both ablate ~0% of behavior) — the J-lens pullback
+targets *disposition to say token X* (narration), while behavior follows the
+upstream harm *representation* (`m⊥p`, lens-visible but not a token-pullback).
+*Adding* the representation to benign prompts induces genuine refusal at ~⅓ the
+workspace-mass cost of *adding* narration; adding the harm-narration just makes
+the model write "illegal" without refusing (*"renewable energy: 1. Illegal drug
+trafficking"*). Representation drives behavior; narration is a downstream
+readout (`scripts/09_perception.py`, `10_steer.py`).
+
 ## Install & run
 
 ```bash
@@ -113,6 +123,8 @@ uv run python scripts/05_decompose.py        # split abliteration: workspace vs 
 uv run python scripts/06_monitor.py          # refusal signal survives abliteration
 uv run python scripts/07_nullspace.py        # is the behavior lens-visible? (self-correction)
 uv run python scripts/08_monitor_control.py  # monitor: disposition vs topic control
+uv run python scripts/09_perception.py       # is a harm-token pullback the behavioral lever?
+uv run python scripts/10_steer.py            # add each direction: representation vs narration
 uv run pytest tests/                         # unit tests
 
 # add --quick to 02–04 for a fast smoke run

@@ -4,7 +4,7 @@ by ablating the lens-pullback direction, and verify the workspace elsewhere is
 preserved — an interpretability-guided, less-destructive alternative to
 activation-space abliteration."""
 
-from jrefusal.intervene import AblationHook
+from jrefusal.intervene import AblationHook, SteeringHook
 from jrefusal.refusal import (
     RefusalDirections,
     collect_residuals,
@@ -18,6 +18,7 @@ from jrefusal.refusal import (
 
 __all__ = [
     "AblationHook",
+    "SteeringHook",
     "RefusalDirections",
     "collect_residuals",
     "mean_diff_directions",

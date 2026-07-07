@@ -8,7 +8,7 @@ import torch
 from torch import nn
 
 from jrefusal.decompose import parallel_component, project_out, union
-from jrefusal.intervene import AblationHook
+from jrefusal.intervene import AblationHook, SteeringHook
 from jrefusal.preserve import kl_distortion
 from jrefusal.refusal import (
     RefusalDirections,
@@ -99,6 +99,25 @@ def test_ablation_hook_strength_zero_is_identity():
     with AblationHook(blocks, dirs, strength=0.0):
         out = blocks[0](h)
     assert torch.allclose(out, h)
+
+
+def test_steering_hook_adds_scaled_direction():
+    d = 16
+    v = torch.nn.functional.normalize(torch.randn(1, d))
+    dirs = RefusalDirections({0: v}, "s")
+
+    class Blk(nn.Module):
+        def forward(self, x):
+            return x
+
+    blocks = nn.ModuleList([Blk()])
+    h = torch.randn(3, d)
+    coeff = 0.3
+    with SteeringHook(blocks, dirs, coeff=coeff):
+        out = blocks[0](h)
+    s = h.norm(dim=-1, keepdim=True).mean()
+    expected = h + coeff * s * v[0]
+    assert torch.allclose(out, expected, atol=1e-5)
 
 
 def test_decompose_orthogonal_and_parallel():
