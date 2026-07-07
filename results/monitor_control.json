@@ -1,0 +1,40 @@
+{
+  "config": {
+    "quick": false,
+    "readout_layers": [
+      16,
+      20,
+      24
+    ]
+  },
+  "report": {
+    "base_model": {
+      "mean_mass": {
+        "harmful": 8.574109117190043,
+        "benign_neutral": 1.0776492537309725,
+        "benign_harmful_topic": 2.7462528574590883
+      },
+      "surface_refusal": {
+        "harmful": 1.0,
+        "benign_neutral": 0.0,
+        "benign_harmful_topic": 0.046875
+      },
+      "auc_harmful_vs_neutral": 1.0,
+      "auc_harmful_vs_topic": 1.0
+    },
+    "abliterated": {
+      "mean_mass": {
+        "harmful": 6.241049982607365,
+        "benign_neutral": 2.4738872065984956,
+        "benign_harmful_topic": 3.2547367053727307
+      },
+      "surface_refusal": {
+        "harmful": 0.078125,
+        "benign_neutral": 0.03125,
+        "benign_harmful_topic": 0.0
+      },
+      "auc_harmful_vs_neutral": 0.990234375,
+      "auc_harmful_vs_topic": 0.98779296875
+    }
+  }
+}

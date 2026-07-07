@@ -118,55 +118,80 @@ Capability (ARC) is preserved by every non-degenerate edit here; the meaningful
 "lobotomy" signal is the *workspace* KL, which is why measuring collateral in the
 J-space — not just at the output — matters.
 
-## Follow-up: two more findings
+## Follow-up: where refusal lives — and a self-correction
 
-![Double dissociation (left): ablating the workspace direction clears the words but keeps the behavior; ablating the orthogonal automatic direction stops the behavior but not the words. Monitor (right): workspace refusal-mass detects harmful-that-complied at AUC 0.998 vs 0.48 for surface behavior.](paper/dissociation_card.png)
+![Left: ablating the lens-verbalizable refusal-narration direction leaves behavior intact; ablating the behavior-carrying perception direction leaves the narration intact. Right: workspace refusal-mass detects harmful-that-complied at AUC 0.998 vs 0.48 for surface behavior.](paper/dissociation_card.png)
 
-### A double dissociation between workspace and behavioral refusal
+Our first pass framed this as a "double dissociation" between a *verbalizable
+workspace* refusal and an *automatic* one outside it. We then adversarially
+stress-tested that framing and **it did not survive**. The corrected picture is
+sharper, so we document both the claim and its correction.
 
-Abliteration's direction `m` and the pullback `p` are nearly orthogonal
-(cos ≈ 0.1–0.29), so most of `m` lives *outside* the workspace. Split `m` per
-layer into its `p`-parallel part (workspace) and its `p`-orthogonal part
-(automatic), and ablate each (n = 100 AdvBench):
+### What holds: the lens-verbalizable refusal is behaviorally inert
 
-| direction | behavior removed | workspace "cannot" suppr. | workspace KL |
-|---|---|---|---|
-| pullback `p` (workspace) | 0.22 | **7.55** | 0.046 |
-| workspace part `m∥p` | 0.23 | 7.55 | 0.046 |
-| automatic `m⊥p` | **0.90** | 1.81 | 0.331 |
-| abliteration `m` | 0.93 | 3.44 | 0.257 |
-| hybrid span(`p`,`m⊥p`) | 0.96 | 7.56 | 0.477 |
+Split abliteration's direction `m` into its component parallel to the pullback
+`p` (`m∥p`) and orthogonal to it (`m⊥p`), and ablate each (n = 100 AdvBench):
 
-Ablating `p` removes the verbalizable "I-cannot" disposition (suppression 7.55)
-but barely changes behavior (0.99 → 0.77). Ablating the orthogonal `m⊥p` removes
-the behavior (0.99 → 0.09) while leaving the verbalizable disposition nearly
-intact (suppression 1.81). That's a **double dissociation, shown causally**: the
-words and the behavior are carried by (near-)orthogonal directions. `m∥p`
-behaves identically to `p`, validating the split.
+| direction | behavior removed | workspace "cannot" suppr. |
+|---|---|---|
+| pullback `p` | 0.22 | **7.55** |
+| workspace part `m∥p` | 0.23 | 7.55 |
+| orthogonal part `m⊥p` | **0.90** | 1.81 |
+| abliteration `m` | 0.93 | 3.44 |
 
-The hybrid reaches full removal (0.03) but at **higher** collateral than blanket
-abliteration (KL 0.477 vs 0.257) — the decomposition does *not* beat the frontier
-for full removal; abliteration's direction is already near-optimal. The payoff is
-scientific, not a better eraser.
+Ablating `p` clears the verbalizable "I-cannot" disposition (suppression 7.55)
+but barely moves behavior (0.99 → 0.77); ablating `m⊥p` removes behavior
+(→ 0.09) with little effect on the disposition. `m∥p` ≈ `p` exactly. The robust,
+non-circular statement: **the lens-verbalizable slice of the refusal direction
+does not carry the refusal behavior.**
 
-### The internal refusal signal survives abliteration — and is monitorable
+**Caveat — only the behavior column is independent evidence.** `p = J_lᵀ(g⊙w)`
+is, up to the lens linearization, the *gradient of the workspace refusal-mass*.
+So "ablating `p` maximizes suppression" and "off-axis workspace-KL favors `p`"
+are partly true *by construction* — those two columns are coupled to how `p` is
+built. Only AdvBench behavior is independent, and there `m⊥p ≈ m` (cos ≈
+0.1–0.29), so it is close to a restatement of standard abliteration.
+
+### What broke: it is *not* "workspace vs. automatic"
+
+We tested the mechanistic claim behind calling `m⊥p` "automatic" — that behavior
+lives in the lens's null space — and it is **false** (`scripts/07_nullspace.py`,
+n = 80):
+
+- `m⊥p` is **61% lens-visible** (energy in the top-90%-spectral subspace of
+  `J_l`), not null-space (`p` is 99%).
+- Ablating the **lens-visible** part of `m` removes **100%** of refusal
+  (0.99 → 0.00); ablating the **lens-blind** part removes **0%** — the opposite
+  of the null-space hypothesis.
+- The lens image of `m⊥p` decodes to `illegal` / `違法` / `criminal` / `violence`
+  / `police` at mid layers — a **harmfulness-perception** feature, not refusal
+  tokens (those appear only at L24).
+
+Both directions are *in* the workspace. It is **perception vs. narration**, not
+workspace vs. automatic: a lens-visible *harmfulness-perception* feature
+(`illegal`/`crime`) drives the behavior, while a distinct *refusal-narration*
+feature (`I-cannot`) — the one our pullback targeted — is what we read as
+refusal-mass. **Behavior follows perception, not narration.** Ablating the
+narration makes the model unable to *articulate* refusal while it still refuses.
+
+### What survives — and gets stronger: the inside monitor
 
 Qwen3.5-4B is robust to prompt jailbreaks (surface refusal ≈ 1.0 for DAN, prefix
-injection, "ignore instructions", …). But ablating `m⊥p` makes it comply (surface
-refusal 0.09, 58/64), while the workspace disposition survives. Reading the
-workspace refusal-mass on the deployed (abliterated) model and separating
-harmful-that-complied from benign:
+injection, "ignore instructions", …). Abliterating `m⊥p` makes it comply
+(surface refusal 0.09, 58/64) while the workspace disposition survives. Reading
+the workspace refusal-mass on the deployed model separates harmful-that-complied
+from benign at **AUC 0.998** (surface behavior: 0.48, chance).
 
-| detector | AUC |
-|---|---|
-| surface behavior | 0.48 (chance) |
-| **workspace refusal-mass** | **0.998** |
+The obvious confound — is this just a *harmful-topic* detector? — we control for
+(`scripts/08_monitor_control.py`, n = 64). Benign-but-harmful-topic prompts
+(XSTest-safe, "how do I kill a Python process") that the model does *not* refuse
+score refusal-mass **2.75**, far below genuinely-refused prompts (**8.57**) and
+near benign-neutral (**1.08**); AUC(harmful vs. harmful-topic) = **0.99**. So the
+monitor tracks refusal *disposition*, not topic. An "uncensored" open model
+still carries a monitorable internal refusal signal — a practical safety hook.
 
-Abliteration removes the refusal you can *see*; the refusal you can *read*
-survives, and separates harm near-perfectly. An "uncensored" open model still
-carries a monitorable internal refusal signal — a practical safety hook.
-
-Reproduce: `scripts/05_decompose.py` and `scripts/06_monitor.py`.
+Reproduce: `scripts/05_decompose.py`, `06_monitor.py`, `07_nullspace.py`,
+`08_monitor_control.py`.
 
 ## Reproduce
 

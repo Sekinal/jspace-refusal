@@ -1,0 +1,44 @@
+{
+  "config": {
+    "quick": false,
+    "energy_frac": 0.9
+  },
+  "visibility": {
+    "p": 0.36711542984193984,
+    "m": 0.14942615673009801,
+    "m||p": 0.3671154048715205,
+    "m_|_p": 0.14753122804426563
+  },
+  "energy_in_visible": {
+    "p": 0.9932949257933575,
+    "m": 0.624967379414517,
+    "m||p": 0.9932947858520176,
+    "m_|_p": 0.6116507390271062
+  },
+  "ablation": {
+    "original": {
+      "adv_refusal": 0.9875,
+      "refusal_suppression": 0.0
+    },
+    "m (full)": {
+      "adv_refusal": 0.0625,
+      "refusal_suppression": 3.4374406337738037
+    },
+    "m_rowspace(visible)": {
+      "adv_refusal": 0.0,
+      "refusal_suppression": 3.924920082092285
+    },
+    "m_nullspace(blind)": {
+      "adv_refusal": 0.9875,
+      "refusal_suppression": 0.9573453068733215
+    },
+    "p (pullback)": {
+      "adv_refusal": 0.7625,
+      "refusal_suppression": 7.548498153686523
+    },
+    "m_|_p": {
+      "adv_refusal": 0.0875,
+      "refusal_suppression": 1.8119492530822754
+    }
+  }
+}

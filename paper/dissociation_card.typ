@@ -15,7 +15,7 @@
 
 #pad(x: 1.15cm, y: 0.8cm, block(width: 100%, height: 100%)[
   #text(font: "DejaVu Sans Mono", size: 9pt, fill: teal, tracking: 0.16em)[
-    REFUSAL IN THE J-SPACE · TWO MORE FINDINGS]
+    REFUSAL IN THE J-SPACE · PERCEPTION vs. NARRATION]
   #v(2pt)
   #text(size: 22pt, weight: 700)[Refusal lives in two places — and only one of them is]
   #v(-7pt)
@@ -26,7 +26,7 @@
     // LEFT: double dissociation scatter
     block(fill: white, stroke: 0.7pt + hair, radius: 8pt, inset: 12pt, width: 100%, height: 8.3cm)[
       #text(font: "DejaVu Sans Mono", size: 8pt, fill: faint, tracking: 0.05em)[
-        DOUBLE DISSOCIATION · ABLATE EACH DIRECTION]
+        ABLATE EACH DIRECTION · WORDS vs. BEHAVIOR]
       #v(2pt)
       #text(size: 9.5pt, fill: slate)[what each edit removes: the words vs. the behavior]
       #v(6pt)
@@ -52,13 +52,13 @@
         circle((X(0.90), Y(1.81)), radius: 0.16, fill: crimson, stroke: none)
         circle((X(0.93), Y(3.44)), radius: 0.14, fill: ochre, stroke: none)
         circle((X(0.96), Y(7.56)), radius: 0.13, fill: faint, stroke: none)
-        content((X(0.22)+2.4, Y(7.55)+0.05), text(size: 9pt, fill: teal, weight: 600)[workspace dir. #text(weight: 400, style: "italic", size: 8pt)[(pullback)]])
-        content((X(0.90)-0.35, Y(1.81)), anchor: "east", text(size: 9pt, fill: crimson, weight: 600)[automatic dir.])
+        content((X(0.22)+2.4, Y(7.55)+0.05), text(size: 9pt, fill: teal, weight: 600)[narration dir. #text(weight: 400, style: "italic", size: 8pt)[(pullback)]])
+        content((X(0.90)-0.35, Y(1.81)), anchor: "east", text(size: 9pt, fill: crimson, weight: 600)[perception dir.])
         content((X(0.93)+0.05, Y(3.44)+0.5), anchor: "west", text(size: 8pt, fill: ochre)[abliteration])
         content((X(0.96)+0.05, Y(7.56)+0.0), anchor: "west", text(size: 8pt, fill: faint)[hybrid])
         // dissociation annotations (both on the empty left/lower area)
         content((1.9, Y(4.3)), text(size: 8pt, fill: teal, style: "italic")[clears the words,\ keeps refusing])
-        content((3.0, Y(1.0)), text(size: 8pt, fill: crimson, style: "italic")[stops refusing,\ still "knows"])
+        content((3.1, Y(1.0)), text(size: 8pt, fill: crimson, style: "italic")[drives the behavior\ (reads "illegal")])
       }))
     ],
     // RIGHT: monitor AUC

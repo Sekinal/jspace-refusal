@@ -25,11 +25,12 @@ Full write-up: **[RESEARCH.md](RESEARCH.md)** · typeset note:
    less benign-workspace distortion, 2.2× more workspace-refusal suppression —
    **but it removes less *behavioral* refusal.**
 
-3. **Because refusal is only ~⅓ workspace-mediated.** You can clear the
-   verbalizable "I-cannot" disposition and the model still refuses. Full
-   behavioral removal requires editing directions *outside* the workspace —
-   exactly what abliteration does, and what it pays for in collateral. The
-   workspace-vs-automatic split from the paper, shown causally for refusal.
+3. **Because behavior follows *perception*, not *narration*.** You can clear the
+   verbalizable "I-cannot" (the refusal *narration* our pullback targets) and the
+   model still refuses — because the behavior is driven by a distinct,
+   *also-verbalizable* harmfulness-*perception* feature (reads as
+   `illegal`/`crime`). We first called this "workspace vs. automatic," then
+   red-teamed and corrected it — see [the follow-up](#follow-up-where-refusal-lives--and-a-self-correction).
 
 ## The idea
 
@@ -62,33 +63,40 @@ Qwen3.5-4B + the pre-fitted Hub lens, strength-1 ablation, disjoint eval splits
 
 See `results/` for the strength sweep (Pareto) and rank sweep JSON.
 
-## Follow-up: where refusal actually lives
+## Follow-up: where refusal lives — and a self-correction
 
-![Double dissociation and the inside monitor](paper/dissociation_card.png)
+![Perception vs. narration, and the inside monitor](paper/dissociation_card.png)
 
-**A double dissociation (causal).** Abliteration's direction `m` is nearly
-orthogonal to the pullback `p` (cos ≈ 0.1–0.29), so most of it lives *outside*
-the workspace. Split it and ablate each part (n=100):
+We first framed this as a "double dissociation" between a *verbalizable
+workspace* refusal and an *automatic* one outside it — then adversarially
+stress-tested that framing, and **it did not survive**. The corrected picture is
+sharper.
 
-| ablate | behavior removed | workspace "cannot" suppressed |
+**What holds.** Split abliteration's direction `m` into its pullback-parallel
+part (`m∥p`) and orthogonal part (`m⊥p`), and ablate each (n=100):
+
+| ablate | behavior removed | verbalizable "cannot" cleared |
 |---|---|---|
-| pullback `p` (workspace) | 0.22 | **7.55** — clears the words, keeps refusing |
-| automatic `m⊥p` (orthogonal) | **0.90** | 1.81 — stops refusing, still "knows" |
+| pullback `p` | 0.22 | **7.55** — clears the words, keeps refusing |
+| orthogonal `m⊥p` | **0.90** | 1.81 — removes the behavior |
 
-The words and the behavior are carried by (near-)orthogonal directions.
+So **the lens-verbalizable slice of refusal is behaviorally inert.** (Caveat:
+`p` is the gradient of the suppression metric, so the "cannot cleared" column is
+partly circular — only the behavior column is independent evidence.)
 
-**The internal refusal signal survives abliteration.** Ablate `m⊥p` so the model
-complies (surface refusal 0.09), then read its workspace refusal-mass and
-separate harmful-that-complied from benign:
+**What broke.** `m⊥p` is *not* "outside the workspace": it's **61% lens-visible**,
+ablating the lens-*visible* part of `m` removes **100%** of behavior (the blind
+part removes 0%), and its lens image reads `illegal`/`違法`/`crime`/`violence` —
+a **harmfulness-perception** feature. It's **perception vs. narration**, both in
+the workspace; behavior follows perception (`scripts/07_nullspace.py`).
 
-| detector | AUC |
-|---|---|
-| surface behavior | 0.48 (chance) |
-| **workspace refusal-mass** | **0.998** |
-
-An "uncensored" model still carries a monitorable internal refusal signal.
-Reproduce: `scripts/05_decompose.py`, `scripts/06_monitor.py`. Details in
-[RESEARCH.md](RESEARCH.md).
+**What survives — and gets stronger: the inside monitor.** Abliterate `m⊥p` so
+the model complies (surface refusal 0.09); its workspace refusal-mass still
+separates harmful-that-complied from benign at **AUC 0.998** (surface: 0.48). And
+it's a *disposition* detector, not a topic detector: benign-but-harmful-topic
+(XSTest-safe) scores 2.75 vs 8.57 for genuinely-refused, AUC 0.99
+(`scripts/08_monitor_control.py`). An "uncensored" model still carries a
+monitorable internal refusal signal. Details in [RESEARCH.md](RESEARCH.md).
 
 ## Install & run
 
@@ -101,8 +109,10 @@ uv run python scripts/01_ablation_smoke.py   # sanity: remove refusal, keep beni
 uv run python scripts/02_benchmark.py        # original vs edited comparison table
 uv run python scripts/03_tradeoff.py         # strength sweep → Pareto frontier
 uv run python scripts/04_rank_sweep.py       # subspace rank sweep
-uv run python scripts/05_decompose.py        # workspace vs automatic (double dissociation)
+uv run python scripts/05_decompose.py        # split abliteration: workspace vs behavior
 uv run python scripts/06_monitor.py          # refusal signal survives abliteration
+uv run python scripts/07_nullspace.py        # is the behavior lens-visible? (self-correction)
+uv run python scripts/08_monitor_control.py  # monitor: disposition vs topic control
 uv run pytest tests/                         # unit tests
 
 # add --quick to 02–04 for a fast smoke run
@@ -116,7 +126,7 @@ Datasets pull from public HuggingFace mirrors with offline fallbacks.
 ```
 jrefusal/
   refusal.py     refusal tokens, Jacobian-pullback direction, mean-diff baseline
-  decompose.py   split abliteration into workspace (∥p) and automatic (⊥p) parts
+  decompose.py   split abliteration into pullback-parallel (∥p) and orthogonal (⊥p) parts
   jailbreak.py   jailbreak wrappers for the refusal-intent monitor
   intervene.py   ablation forward hook (project residual orthogonal to a basis)
   preserve.py    workspace-KL collateral metric (the anti-lobotomy safeguard)
