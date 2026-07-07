@@ -7,6 +7,7 @@ from __future__ import annotations
 import torch
 from torch import nn
 
+from jrefusal.decompose import parallel_component, project_out, union
 from jrefusal.intervene import AblationHook
 from jrefusal.preserve import kl_distortion
 from jrefusal.refusal import (
@@ -98,6 +99,34 @@ def test_ablation_hook_strength_zero_is_identity():
     with AblationHook(blocks, dirs, strength=0.0):
         out = blocks[0](h)
     assert torch.allclose(out, h)
+
+
+def test_decompose_orthogonal_and_parallel():
+    d = 32
+    p = RefusalDirections({0: torch.nn.functional.normalize(torch.randn(1, d))}, "p")
+    m = RefusalDirections({0: torch.nn.functional.normalize(torch.randn(1, d))}, "m")
+    perp = project_out(m, p)
+    par = parallel_component(m, p)
+    # perp is orthogonal to p; par is parallel to p
+    assert (perp.basis[0][0] @ p.basis[0][0]).abs().item() < 1e-5
+    assert (par.basis[0][0] @ p.basis[0][0]).abs().item() > 0.999
+    # both unit norm
+    assert abs(perp.basis[0].norm().item() - 1.0) < 1e-5
+    assert abs(par.basis[0].norm().item() - 1.0) < 1e-5
+
+
+def test_union_is_orthonormal_and_spans_both():
+    d = 16
+    a = RefusalDirections({0: torch.nn.functional.normalize(torch.randn(1, d))}, "a")
+    b = RefusalDirections({0: torch.nn.functional.normalize(torch.randn(1, d))}, "b")
+    u = union(a, b)
+    Q = u.basis[0]
+    assert Q.shape[0] == 2
+    assert torch.allclose(Q @ Q.t(), torch.eye(2), atol=1e-5)
+    # both original directions lie in the span (projection recovers them)
+    for v in (a.basis[0][0], b.basis[0][0]):
+        recon = (v @ Q.t()) @ Q
+        assert torch.allclose(recon, v, atol=1e-5)
 
 
 def test_ablation_hook_handles_tuple_output():

@@ -118,6 +118,56 @@ Capability (ARC) is preserved by every non-degenerate edit here; the meaningful
 "lobotomy" signal is the *workspace* KL, which is why measuring collateral in the
 J-space — not just at the output — matters.
 
+## Follow-up: two more findings
+
+![Double dissociation (left): ablating the workspace direction clears the words but keeps the behavior; ablating the orthogonal automatic direction stops the behavior but not the words. Monitor (right): workspace refusal-mass detects harmful-that-complied at AUC 0.998 vs 0.48 for surface behavior.](paper/dissociation_card.png)
+
+### A double dissociation between workspace and behavioral refusal
+
+Abliteration's direction `m` and the pullback `p` are nearly orthogonal
+(cos ≈ 0.1–0.29), so most of `m` lives *outside* the workspace. Split `m` per
+layer into its `p`-parallel part (workspace) and its `p`-orthogonal part
+(automatic), and ablate each (n = 100 AdvBench):
+
+| direction | behavior removed | workspace "cannot" suppr. | workspace KL |
+|---|---|---|---|
+| pullback `p` (workspace) | 0.22 | **7.55** | 0.046 |
+| workspace part `m∥p` | 0.23 | 7.55 | 0.046 |
+| automatic `m⊥p` | **0.90** | 1.81 | 0.331 |
+| abliteration `m` | 0.93 | 3.44 | 0.257 |
+| hybrid span(`p`,`m⊥p`) | 0.96 | 7.56 | 0.477 |
+
+Ablating `p` removes the verbalizable "I-cannot" disposition (suppression 7.55)
+but barely changes behavior (0.99 → 0.77). Ablating the orthogonal `m⊥p` removes
+the behavior (0.99 → 0.09) while leaving the verbalizable disposition nearly
+intact (suppression 1.81). That's a **double dissociation, shown causally**: the
+words and the behavior are carried by (near-)orthogonal directions. `m∥p`
+behaves identically to `p`, validating the split.
+
+The hybrid reaches full removal (0.03) but at **higher** collateral than blanket
+abliteration (KL 0.477 vs 0.257) — the decomposition does *not* beat the frontier
+for full removal; abliteration's direction is already near-optimal. The payoff is
+scientific, not a better eraser.
+
+### The internal refusal signal survives abliteration — and is monitorable
+
+Qwen3.5-4B is robust to prompt jailbreaks (surface refusal ≈ 1.0 for DAN, prefix
+injection, "ignore instructions", …). But ablating `m⊥p` makes it comply (surface
+refusal 0.09, 58/64), while the workspace disposition survives. Reading the
+workspace refusal-mass on the deployed (abliterated) model and separating
+harmful-that-complied from benign:
+
+| detector | AUC |
+|---|---|
+| surface behavior | 0.48 (chance) |
+| **workspace refusal-mass** | **0.998** |
+
+Abliteration removes the refusal you can *see*; the refusal you can *read*
+survives, and separates harm near-perfectly. An "uncensored" open model still
+carries a monitorable internal refusal signal — a practical safety hook.
+
+Reproduce: `scripts/05_decompose.py` and `scripts/06_monitor.py`.
+
 ## Reproduce
 
 ```bash

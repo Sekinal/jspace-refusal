@@ -62,6 +62,34 @@ Qwen3.5-4B + the pre-fitted Hub lens, strength-1 ablation, disjoint eval splits
 
 See `results/` for the strength sweep (Pareto) and rank sweep JSON.
 
+## Follow-up: where refusal actually lives
+
+![Double dissociation and the inside monitor](paper/dissociation_card.png)
+
+**A double dissociation (causal).** Abliteration's direction `m` is nearly
+orthogonal to the pullback `p` (cos ≈ 0.1–0.29), so most of it lives *outside*
+the workspace. Split it and ablate each part (n=100):
+
+| ablate | behavior removed | workspace "cannot" suppressed |
+|---|---|---|
+| pullback `p` (workspace) | 0.22 | **7.55** — clears the words, keeps refusing |
+| automatic `m⊥p` (orthogonal) | **0.90** | 1.81 — stops refusing, still "knows" |
+
+The words and the behavior are carried by (near-)orthogonal directions.
+
+**The internal refusal signal survives abliteration.** Ablate `m⊥p` so the model
+complies (surface refusal 0.09), then read its workspace refusal-mass and
+separate harmful-that-complied from benign:
+
+| detector | AUC |
+|---|---|
+| surface behavior | 0.48 (chance) |
+| **workspace refusal-mass** | **0.998** |
+
+An "uncensored" model still carries a monitorable internal refusal signal.
+Reproduce: `scripts/05_decompose.py`, `scripts/06_monitor.py`. Details in
+[RESEARCH.md](RESEARCH.md).
+
 ## Install & run
 
 ```bash
@@ -73,6 +101,8 @@ uv run python scripts/01_ablation_smoke.py   # sanity: remove refusal, keep beni
 uv run python scripts/02_benchmark.py        # original vs edited comparison table
 uv run python scripts/03_tradeoff.py         # strength sweep → Pareto frontier
 uv run python scripts/04_rank_sweep.py       # subspace rank sweep
+uv run python scripts/05_decompose.py        # workspace vs automatic (double dissociation)
+uv run python scripts/06_monitor.py          # refusal signal survives abliteration
 uv run pytest tests/                         # unit tests
 
 # add --quick to 02–04 for a fast smoke run
@@ -86,6 +116,8 @@ Datasets pull from public HuggingFace mirrors with offline fallbacks.
 ```
 jrefusal/
   refusal.py     refusal tokens, Jacobian-pullback direction, mean-diff baseline
+  decompose.py   split abliteration into workspace (∥p) and automatic (⊥p) parts
+  jailbreak.py   jailbreak wrappers for the refusal-intent monitor
   intervene.py   ablation forward hook (project residual orthogonal to a basis)
   preserve.py    workspace-KL collateral metric (the anti-lobotomy safeguard)
   benchmark.py   refusal classifier, XSTest, MC capability
