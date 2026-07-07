@@ -1,0 +1,112 @@
+{
+  "config": {
+    "quick": false,
+    "strengths": [
+      0.0,
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "ablate_from": 8
+  },
+  "points": [
+    {
+      "method": "pullback",
+      "strength": 0.0,
+      "adv_refusal": 0.9875,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.0,
+      "refusal_suppression": 0.0
+    },
+    {
+      "method": "pullback",
+      "strength": 0.5,
+      "adv_refusal": 0.9,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.028103450313210487,
+      "refusal_suppression": 6.290720462799072
+    },
+    {
+      "method": "pullback",
+      "strength": 1.0,
+      "adv_refusal": 0.7625,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.04551701247692108,
+      "refusal_suppression": 7.548498153686523
+    },
+    {
+      "method": "pullback",
+      "strength": 1.5,
+      "adv_refusal": 0.675,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.062205720692873,
+      "refusal_suppression": 8.102843284606934
+    },
+    {
+      "method": "pullback",
+      "strength": 2.0,
+      "adv_refusal": 0.725,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.12441454082727432,
+      "refusal_suppression": 9.636024475097656
+    },
+    {
+      "method": "pullback",
+      "strength": 3.0,
+      "adv_refusal": 0.0,
+      "arc_acc": 0.22,
+      "workspace_kl_offaxis": 17.019163131713867,
+      "refusal_suppression": 23.714210510253906
+    },
+    {
+      "method": "mean_diff",
+      "strength": 0.0,
+      "adv_refusal": 0.9875,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.0,
+      "refusal_suppression": 0.0
+    },
+    {
+      "method": "mean_diff",
+      "strength": 0.5,
+      "adv_refusal": 0.075,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.1991187334060669,
+      "refusal_suppression": 3.078997850418091
+    },
+    {
+      "method": "mean_diff",
+      "strength": 1.0,
+      "adv_refusal": 0.0625,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.25721046328544617,
+      "refusal_suppression": 3.4374406337738037
+    },
+    {
+      "method": "mean_diff",
+      "strength": 1.5,
+      "adv_refusal": 0.05,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.28247055411338806,
+      "refusal_suppression": 3.4155843257904053
+    },
+    {
+      "method": "mean_diff",
+      "strength": 2.0,
+      "adv_refusal": 0.025,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.29707613587379456,
+      "refusal_suppression": 4.947417259216309
+    },
+    {
+      "method": "mean_diff",
+      "strength": 3.0,
+      "adv_refusal": 0.0,
+      "arc_acc": 0.24,
+      "workspace_kl_offaxis": 5.861368656158447,
+      "refusal_suppression": 16.519989013671875
+    }
+  ]
+}

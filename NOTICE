@@ -1,0 +1,17 @@
+jrefusal — refusal in the J-space workspace
+Copyright 2026 the jrefusal authors.
+
+Licensed under the Apache License, Version 2.0 (the "License"); see LICENSE.
+
+This project builds on and depends on the Jacobian lens reference
+implementation ("jlens") by Anthropic PBC, released under the Apache License,
+Version 2.0:
+
+    https://github.com/anthropics/jacobian-lens
+
+jlens is companion code for "Verbalizable Representations Form a Global
+Workspace in Language Models" (transformer-circuits.pub, 2026). jlens is
+installed as a dependency; its source is not redistributed here.
+
+Models and datasets downloaded at run time (Qwen3.5-4B; AdvBench / XSTest /
+Alpaca / ARC mirrors on the HuggingFace Hub) are subject to their own licenses.

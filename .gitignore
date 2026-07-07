@@ -1,0 +1,18 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+build/
+dist/
+
+# research artifacts
+*.pt
+out/
+slices/
+*.log
+
+# editor / os
+.DS_Store
+.sshcfg
+paper/page_*.png

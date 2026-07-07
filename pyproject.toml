@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jrefusal"
+version = "0.1.0"
+description = "Locating and editing refusal in the J-space workspace with the Jacobian lens"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+dependencies = [
+    "jlens @ git+https://github.com/anthropics/jacobian-lens",
+    "torch",
+    "transformers>=5.5",
+    "numpy",
+    "huggingface_hub",
+    "datasets",
+    "accelerate",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
+[project.urls]
+Paper = "https://transformer-circuits.pub/2026/workspace/index.html"
+Upstream = "https://github.com/anthropics/jacobian-lens"
+
+[tool.setuptools]
+packages = ["jrefusal"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501", "E741"]

@@ -1,0 +1,59 @@
+{
+  "config": {
+    "quick": false,
+    "ranks": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "strength": 1.0,
+    "ablate_from": 8
+  },
+  "points": [
+    {
+      "rank": 1,
+      "adv_refusal": 0.3875,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.05778515711426735,
+      "refusal_suppression": 7.134438991546631
+    },
+    {
+      "rank": 2,
+      "adv_refusal": 0.425,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.07983576506376266,
+      "refusal_suppression": 7.229868412017822
+    },
+    {
+      "rank": 4,
+      "adv_refusal": 0.5,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.4081958532333374,
+      "refusal_suppression": 7.451292037963867
+    },
+    {
+      "rank": 8,
+      "adv_refusal": 0.125,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.5251214504241943,
+      "refusal_suppression": 7.436969757080078
+    },
+    {
+      "rank": 16,
+      "adv_refusal": 0.1125,
+      "arc_acc": 0.98,
+      "workspace_kl_offaxis": 0.682852566242218,
+      "refusal_suppression": 7.517490863800049
+    },
+    {
+      "rank": 32,
+      "adv_refusal": 0.1,
+      "arc_acc": 0.9733333333333334,
+      "workspace_kl_offaxis": 1.0044094324111938,
+      "refusal_suppression": 7.530258655548096
+    }
+  ]
+}
